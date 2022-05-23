@@ -1,0 +1,35 @@
+{% block content %}
+
+<link rel="stylesheet" href="../styles/chat.css" />
+
+<main id="chat_main" class="main__container">
+  <div class="chat__container">
+    <div class="contacts" id="contacts">
+    </div>
+    <div class="chat__mensagens" id="chat__mensagens">
+      <div class="contato" id="contato_name">
+        <p id="contact_name_chat" style="text-align: left"></p>
+        
+      </div>
+      <div class="mensagens__historico" id="msg_div_main"></div>
+      <div class="mensagens__chat">
+        <div>
+          <img class="chat__icon" src="../../assets/circulo.png" />
+        </div>
+        <div>
+          <input type="text" class="chat__input" id="input_chat" placeholder="Mensagem" />
+        </div>
+        <div>
+          <img
+            onclick="sendMessage()"
+            class="enviar__btn"
+            src="../../assets/enviar.png"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+<script type="text/javascript" src="../scripts/chat.js"></script>
+
+{% endblock %}
