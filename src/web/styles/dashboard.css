@@ -1,56 +1,51 @@
-h1 {
-  color: #6d6b6c;
+.main__container__dashboard {
+  width: calc(100vw - 350px);
+  height: calc(100vh - 190px);
+  padding: 32px 70px 32px 32px;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
-.chat__subheader {
+.visao_geral {
   width: 100%;
-  height: 50px;
-  background-color: #e5eaf0;
   display: flex;
   flex-direction: row;
+  justify-content: space-between;
+  gap: 32px;
 }
 
-.chat__container {
+.visao_geral div {
   width: 100%;
-  height: 100%;
   background-color: #d2dbea;
+  padding: 16px;
+  border-radius: 8px;
 }
 
-.chat__mensagens {
+.visao_geral div p:nth-child(2) {
+  font-size: 22px;
+  font-weight: bold;
+}
+
+.tabela {
+  margin: 32px 0px 0px 0px;
+}
+
+.tabela table {
   width: 100%;
-  height: calc(100% - 100px);
-  display: grid;
-  grid-template-rows: auto 85px;
+  border-collapse: collapse;
+  margin: 16px 0px 0px;
 }
 
-.mensagens__historico {
-  width: 100%;
-  height: 100%;
+.tabela table thead tr th {
+  padding: 16px;
+  background-color: #d2dbea;
+  text-align: left;
 }
 
-.mensagens__chat {
-  width: calc(100% - 60px);
-  height: 100%;
-  background-color: #e5eaf0;
-  display: grid;
-  grid-template-columns: 50px auto 50px;
-  padding: 9px 30px;
-  gap: 16px;
+.tabela table tbody tr td {
+  padding: 16px;
 }
 
-.chat__input {
-  width: 100%;
-  height: 40px;
-  font-size: 24px;
-  outline: none;
-  background-color: transparent;
-  border: none;
-  padding: 3px 10px 0px;
-}
-
-.chat__icon,
-.enviar__btn {
-  padding: 4px;
-  height: 40px;
-  cursor: pointer;
+.tabela table tbody tr:nth-child(even) {
+  background-color: #d2dbea30;
 }

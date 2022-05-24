@@ -4,7 +4,7 @@
   overflow: hidden;
   /*font-family: Roboto, Ubuntu, sans-serif;*/
 }
-
+/*
 .menu__item {
   width: 100%;
   height: 125px;
@@ -28,7 +28,7 @@
 .menu--atual:hover {
   background-color: #f3e7ff;
 }
-
+*/
 select {
   width: 100%;
   padding: 14px 20px;

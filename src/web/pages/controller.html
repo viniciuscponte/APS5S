@@ -14,33 +14,22 @@
 
     <!-- Itens do menu lateral -->
     <div class="sidebar__menu">
-      <button
-        id="dashboard-btn"
-        class="menu__item"
-        type="button"
-        onclick="changeScreen('dashboard')"
-      >
+      <button id="dashboard-btn" class="menu__item" type="button" onclick="changeScreen('dashboard')">
         Dashboard
       </button>
-      <button
-        id="chat-btn"
-        class="menu__item"
-        type="button"
-        onclick="changeScreen('chat')"
-      >
+      <button id="chat-btn" class="menu__item" type="button" onclick="changeScreen('chat')">
         Chat
       </button>
-      <button id="usuarios-btn" class="menu__item" type="button">
-        Usuários
+      <button id="usuarios-btn" class="menu__item" type="button" onclick="changeScreen('cadastro')">
+        Cadastrar Despejo
       </button>
     </div>
   </div>
   <!-- Container principal para renderização das telas -->
   <div class="controller__principal">
+    <input type="hidden" id="num" value="0" />
     <header class="chat__header">
-      <div id="tituloTela">
-        <h1>CHAT</h1>
-      </div>
+      <h1 id="header-titulo">CHAT</h1>
       <div class="header__perfil">
         <div class="icone" id="perfil__icone"></div>
         <h3 id="perfil__nome" style="color: #8298bb;"></h3>
@@ -48,8 +37,11 @@
     </header>
     <!-- Utilização das div's para controle de visibilidade em conjunto com a tag -->
     <!-- de "Include" que referencia outro arquivo .html a ser renderizado -->
-    <div id="dashboard" style="display: none">{% include "dashboard.html" %}</div>
-    <div id="chat">{% include "chat.html" %}</div>
+    <div id="dashboard" style="display: none">
+      {% include "dashboard.html" %}
+    </div>
+    <div id="chat" style="display: none">{% include "chat.html" %}</div>
+    <div id="cadastro" style="display: none">{% include "cadastro.html" %}</div>
   </div>
 </div>
 

@@ -1,5 +1,6 @@
 import socket
 import threading
+import time
 import mysql.connector
 
 # Inicia servidor
@@ -40,7 +41,7 @@ def initialConnection():
     while True:
         try:
             client, address = server.accept()
-            user_thread = threading.Thread(target=ClientMessages,args=(client, address))
+            user_thread = threading.Thread(target=ClientMessages,args=(client, address), name="t2")
             user_thread.start()
             print(f"New Connetion: {str(address)}")
         except:
@@ -55,24 +56,42 @@ def ClientMessages(client, address):
 
             # Mensagem recebida do cliente
             msg = (client.recv(2048).decode('UTF-8'))
+            print(msg)
 
 
 
             ########### LOGIN VALIDATION ############
             
             # Se a mensagem vier com "#!usuario!##!senha!# " no inicio será considerada como dados de login para validação
-            if msg[:21] == "#!usuario!##!senha!# ":
-                msg = msg[21:]
+            if msg[:10] == "#!login!# ":
+                print(1)
+                msg = msg[10:]
+                print(2)
                 username = msg.split("  :  ")[0]
+                print(3)
                 password = msg.split("  :  ")[1]
+                print(4)
                 response = UserValidation(username, password)
+                print(5)
                 if response == 1:
-                    client.send('USER IS ALREADY CONNECTED'.encode('UTF-8'))
+                    msg = "#!login!# " + 'USER IS ALREADY CONNECTED'
+                    print(6)
+                    client.send(msg.encode('UTF-8'))
+                    print(7)
                 elif response == 2:
-                    client.send('USER DOES NOT EXIST'.encode('UTF-8'))
+                    msg = "#!login!# " + 'USER DOES NOT EXIST'
+                    print(8)
+                    client.send(msg.encode('UTF-8'))
+                    print(9)
                 else:
-                    client.send(f'{response}'.encode('UTF-8'))
+                    print(10)
+                    msg = "#!login!# " + response
+                    print(11)
+                    client.send(msg.encode('UTF-8'))
+                    SendMessage(f"#!chat!# {str(response)} joined the chat!!", client)
+                    print(11)
                     usernames.append(response)
+                    print(12)
                     clients.append(client)
                     print(f"{str(response)} completed connection via login!!")
 
@@ -83,22 +102,37 @@ def ClientMessages(client, address):
 
             ########### CHAT ############
 
-            elif msg[:15] == "#!getContacts!#":
-                msg = ""
-                for names in usernames:
-                    msg = msg + "  :  " + names
-                client.send(msg.encode("UTF-8"))
-
             elif msg[:9] == "#!chat!# ":
-                msg = msg[9:]
-                name = msg.split("  :  ")[0]
-                sendTo = msg.split("  :  ")[1]
-                msg = msg.split("  :  ")[2]
-                SendMessage(msg, clients[usernames.index(sendTo)], name)
+                SendMessage(msg, client)
 
             #-#-#-#-#-#-#-#-#-#-#-#-#-#-#
 
+            ########### CADASTRO DE DESPEJOS ############
 
+            elif msg[:13] == "#!cadastro!# ":
+                msg = msg[13:]
+                msg = str(msg).split("  :  ")
+
+                msg = "#!cadastro!# " + str(CadDespejo(msg[0], msg[1], msg[2], msg[3], msg[4]))
+                client.send(msg.encode("UTF-8"))
+
+            #-#-#-#-#-#-#-#-#-#-#-#-#-#-#
+
+            ########### COLETAR DADOS DA TABELA DESPEJOS ############
+
+            elif msg[:14] == "#!dashboard!# ":
+                rows = GetDespejo()
+                if rows != "vazio":
+                    for row in rows:
+                        print(row)
+                        msg = "#!dashboard!# " + row
+                        time.sleep(0.1)
+                        client.send(msg.encode('UTF-8'))
+                else:
+                    msg = "#!dashboard!# " + "vazio"
+                    client.send(msg.encode('UTF-8'))
+
+            #-#-#-#-#-#-#-#-#-#-#-#-#-#-#
 
             ########### CLOSE CLIENT ############
 
@@ -108,7 +142,9 @@ def ClientMessages(client, address):
                 usernames.remove(usernames[clients.index(client)])
                 clients.remove(clients[clients.index(client)])
                 client.close()
+
             #-#-#-#-#-#-#-#-#-#-#-#-#-#-#
+
         except:
             pass
 
@@ -122,7 +158,7 @@ def UserValidation(user, password):
         cursor.execute(f"SELECT * FROM USUARIOS WHERE USUARIO = '{user}' AND SENHA = '{password}';")
         result = cursor.fetchall()
         if len(result) != 0:
-            if not user in usernames:
+            if not str(result[0]).replace('(','').replace(')','').split(',')[4].replace(' \'','').replace('\'', '') in usernames:
                 return str(result[0]).replace('(','').replace(')','').split(',')[4].replace(' \'','').replace('\'', '')
             else:
                 return 1
@@ -130,10 +166,47 @@ def UserValidation(user, password):
             return 2
 
 # Manda mensagem para o contato
-def SendMessage(message, client, sendFrom):
-    message = sendFrom + "  :  " + message
-    client.send(str(message).encode('UTF-8'))
+def SendMessage(msg, client):
+    for i in clients:
+        if i != client:
+            i.send(msg.encode('UTF-8'))
 
+# Cadastra despejo no banco de dados
+def CadDespejo(company, typeEviction, qty, region, description):
+    global con
+    try:
+        if con.is_connected():
+            cursor = con.cursor()
+            cursor.execute(f'INSERT INTO DESPEJOS(ID_DESPEJOS, TIPO_DESPEJO, EMPRESA, REGIAO, DESCRICAO, QUANTIDADE) VALUES (null, "{typeEviction}", "{company}", "{region}", "{description}", {qty});')
+            con.commit()
+            return "true"
+    except:
+        return "false"
+
+# Retorna dados existentes na tabela despejos
+def GetDespejo():
+    global con
+    if con.is_connected():
+        cursor = con.cursor()
+        cursor.execute(f"SELECT * FROM DESPEJOS;")
+        result = cursor.fetchall()
+        rows = list()
+        if len(result) != 0:
+            rows.append(f"num  :  {len(result)}")
+            for row in result:
+                row = str(row).replace('(','').replace(')','').replace(' \'','').replace('\'', '').split(',')
+                id = row[0]
+                typeEviction = row[1]
+                company = row[2]
+                region = row[3]
+                description = row[4]
+                qty = row[5]
+                msg = id + "  :  " + company + "  :  " + typeEviction + "  :  " + qty + "  :  " + region + "  :  " + description
+                rows.append(msg)
+            rows.append("fim  :  fim")
+            return rows
+        else:
+            return "vazio"
 
 ########### INICIO (AGUARDA A CONEXÃO COM O CLIENTE) ##############
 initialConnection()

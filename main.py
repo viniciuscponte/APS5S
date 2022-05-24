@@ -1,4 +1,5 @@
-from traceback import print_tb
+from pydoc import cli
+from tkinter import E
 import eel
 import socket
 import threading
@@ -8,17 +9,21 @@ stopWhile = True
 
 porta = int(input('PORT: '))
 
-contacts = list()
-
-name = list()
+name = ""
 
 # Inicia o Client Socket
 client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
+rows = list()
+
+tamrows = 0
+
+screen = ""
+
+ip = ""
+port = ""
+
 # EXECUTA COMANDOS DE INICIALIZAÇÃO
-@eel.expose
-def onStart():
-  pyautogui.hotkey('winleft', 'up')
 
 
 
@@ -27,7 +32,23 @@ def onStart():
 ########## FUNÇÕES EEL CHAMADAS PELO JS ############
 ####################################################
 
+# INICIO
+@eel.expose
+def onStart():
+  global screen
+  global ip
+  global port
+  dados = [screen, name, ip, port]
+  if screen == "":
+    pyautogui.hotkey('winleft', 'up')
+    screen = "login"
 
+  return dados
+
+@eel.expose
+def SaveScreen(Screen):
+  global screen
+  screen = Screen
 
 #################### LOGIN #########################
 
@@ -35,6 +56,10 @@ def onStart():
 @eel.expose
 def StartConnection(IpPort):
   global client
+  global ip
+  global port
+  ip = str(IpPort).split(":")[0]
+  port = str(IpPort).split(":")[1]
   try:
     ServerIP = str(IpPort).split(":")[0]
     PORT = str(IpPort).split(":")[1]
@@ -43,88 +68,87 @@ def StartConnection(IpPort):
   except:
     return False
 
-
-# FAZ AUTENTICAÇÃO DO USUARIO
-@eel.expose
-def Authenticate(usuario, senha):
-  global client
-  global name
-  client.send(str("#!usuario!##!senha!# " + str(usuario) + "  :  " + str(senha)).encode('UTF-8'))
-
-  while True:
-    try:
-      message = client.recv(2048).decode('UTF-8')
-      break
-    except:
-      pass 
-
-  name = [message, message[:1]]
-  return message
-
-@eel.expose
-def Name():
-  global name
-  return name
-
 ##-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-##
-
-
 
 
 ###################### CHAT ########################
 
-
-@eel.expose
-def Contacts():
-  global client
-  global name
-  message = "#!getContacts!#"
-  client.send(message.encode('UTF-8'))
-  while True:
-    try:
-      message = client.recv(2048).decode('UTF-8')
-      break
-    except:
-      pass
-  message = message.split("  :  ")
-  message.remove("")
-  message.remove(name[0])
-  return message
-
-@eel.expose
-def SendMessage(message, sendTo):
-  global client
-  global name
-  message = str("#!chat!# " + str(name[0]) + "  :  " + str(sendTo) + "  :  " + str(message))
-  client.send(message.encode('UTF-8'))
-  
+# RECEBE MENSAGENS
 @eel.expose
 def initThread():
-  thread1 = threading.Thread(target=ReceiveMessage,args=())
-  thread1.start()
+  t1 = threading.Thread(target=ReceiveMessage,args=(),name="t1")
+  t1.start()
 
 @eel.expose
-def stopWhile():
+def StopWhile():
   global stopWhile
   stopWhile = False
 
 @eel.expose
 def ReceiveMessage():
+  global name
+  global client
   global stopWhile
+  global rows
+  global tamrows
+  num = 0
   while stopWhile:
     try:
       msg = (client.recv(2048).decode('UTF-8'))
-      print('recebeu msg')
-      name = msg.split("  :  ")[0]
-      msg = msg.split("  :  ")[1]
-      data = [msg, name]
-      eel.receiveMessage(data)
+      print(msg)
+
+      #Login
+      if msg[:10] == "#!login!# ":
+        msg = msg[10:]
+        name = msg
+        msg = msg + "  :  " + msg[:1]
+        print(msg)
+        eel.receiveMessage(msg, "login")
+
+      #Cadastro Despejo
+      elif msg[:13] == "#!cadastro!# ":
+        msg = msg[13:]
+        eel.receiveMessage(msg, "cadastro")
+
+      #Chat
+      elif msg[:9] == "#!chat!# ":
+        msg = msg[9:]
+        eel.receiveMessage(msg, "chat")
+        num += 1
+
+      #Dashboard
+      elif msg[:14] == "#!dashboard!# ":
+        msg = msg[14:]
+        print(msg)
+        if msg[:8] == "num  :  ":
+          msg = msg[8:]
+          tamrows = int(msg)
+        elif msg == "fim  :  fim":
+          if len(rows) == tamrows:
+            print(rows)
+            eel.receiveMessage(rows, "dashboard")
+          rows.clear()
+        elif msg == "vazio":
+          eel.receiveMessage(rows, "dashboard")
+          rows.clear()
+        else:
+          rows.append(msg)
     except:
       pass
 
 
 
+# ENVIA MENSAGENS
+@eel.expose
+def SendMessage(message, screen):
+  global client
+  print('entrou')
+  message = str(f"#!{screen}!# " + str(message))
+  client.send(message.encode('UTF-8'))
+
 ##-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-##
+
+
 
 
 
@@ -139,7 +163,7 @@ except (SystemExit, MemoryError, KeyboardInterrupt):
   pass
 
 try:
-  msg = "#!quit!# " + str(name[0])
+  msg = "#!quit!# " + str(name)
   client.send(msg.encode('UTF-8'))
   client.close()
   stopWhile = False

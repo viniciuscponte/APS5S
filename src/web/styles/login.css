@@ -13,19 +13,21 @@
   }
   
   #main_login {
+    /* Arquivo de estilização específico para a tela de login */
   width: 100vw;
   height: 100vh;
   background-color: #aabddc;
   }
   
   #div_login {
+    align-self: flex-end;
   width: 50%;
   min-width: 350px;
   height: 100%;
   background-color: #fff;
   display: block;
   margin: 0px 0px 0px auto;
-  padding: 60px 0px;
+  padding: 7% 0px;
   }
   
   #header_login {

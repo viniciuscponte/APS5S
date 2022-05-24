@@ -1,25 +1,13 @@
-eel.expose(closeCadastroScreen);
-function closeCadastroScreen() {
-  window.close();
-}
-
-function irParaAnalytics() {
-  eel.openPage("cadastro.html", "dashboard.html");
-}
-
-function irParaChat() {
-  eel.openPage("cadastro.html", "chat.html");
-}
-
 async function cadastrar() {
-  const name = document.getElementById("cadastro-name").value;
-  const email = document.getElementById("cadastro-email").value;
-  const password = document.getElementById("cadastro-password").value;
-  const userType = document.getElementById("cadastro-type").value;
+  const empresa = document.getElementById("cadastro-empresa").value;
+  const tipo = document.getElementById("cadastro-tipo").value;
+  const quantidade = document.getElementById("cadastro-quantidade").value;
+  const regiao = document.getElementById("cadastro-regiao").value;
+  const descricao = document.getElementById("cadastro-descricao").value;
 
-  eel
-    .registerNewUser(name, email, password, userType)()
-    .then((result) => {
-      irParaAnalytics();
-    });
+  console.log(empresa, tipo, quantidade, regiao, descricao);
+
+  var msg = empresa + "  :  " + tipo + "  :  " + quantidade + "  :  " + regiao + "  :  " + descricao;
+
+  sendMessageMain(msg, "cadastro");
 }
