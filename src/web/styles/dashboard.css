@@ -1,11 +1,22 @@
 .main__container__dashboard {
-  width: calc(100vw - 350px);
   height: calc(100vh - 190px);
   padding: 32px 70px 32px 32px;
   overflow-x: hidden;
-  overflow-y: auto;
+  overflow-y: hidden;
 }
 
+thead tr {display: block}
+
+tbody {
+display: block;
+overflow: auto;
+height:224px;
+width: 100%
+}
+
+th {width: 13vw}
+
+td {width: 13vw}
 .visao_geral {
   width: 100%;
   display: flex;
