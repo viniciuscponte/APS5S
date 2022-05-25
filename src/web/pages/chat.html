@@ -7,16 +7,16 @@
     <div class="chat__mensagens" id="chat__mensagens">
       <div class="mensagens__historico" id="msg_div_main"></div>
       <br>
-      <div class="mensagens__chat">
-        <div>
-          <i style="font-size: 50px;" class="material-icons send">&#xe853;</i>
+      <div class="mensagens__chat row">
+        <div class="col-1">
+          <i style="font-size: 40px; left: 50%;" class="material-icons send">&#xe853;</i>
         </div>
-        <div>
+        <div class="col-8">
           <input onkeypress="enviarEnter(event)" type="text" class="chat__input" id="input_chat"
             placeholder="Mensagem" />
         </div>
-        <div style="padding: 10px;">
-          <i onclick="sendMessage()" class="material-icons send" style="cursor: pointer;">&#xe163;</i>
+        <div class="col-1" style="padding: 10px;">
+          <i onclick="sendMessage()" class="material-icons send" style="cursor: pointer; right: 0;">&#xe163;</i>
         </div>
       </div>
     </div>

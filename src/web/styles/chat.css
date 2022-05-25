@@ -78,10 +78,10 @@ h1 {
 .mensagens__chat {
   background-color: white;
   opacity: 0.7;
-  display: flex;
-  grid-template-columns: 60px auto 60px;
+  /* display: flex;
+  grid-template-columns: 60px auto 60px; */
   padding: 9px 30px;
-  gap: 16px;
+  /* gap: 16px; */
   position: absolute;
   width: 100vw;
   bottom: 0;
@@ -94,7 +94,7 @@ h1 {
   outline: none;
   background-color: transparent;
   border: none;
-  padding: 0px 20px 0px;
+  padding: 0px 0px 0px;
   font-family: 'Montserrat Alternates', sans-serif;
   margin: 0;
   top: 50%;
