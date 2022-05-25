@@ -27,4 +27,6 @@ function startConnection() {
       alert("Conexão deu errado!!");
     }
   });
+
+  
 }

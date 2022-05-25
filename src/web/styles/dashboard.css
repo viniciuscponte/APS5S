@@ -19,6 +19,7 @@
   background-color: #d2dbea;
   padding: 16px;
   border-radius: 8px;
+  color: #545454
 }
 
 .visao_geral div p:nth-child(2) {
@@ -40,6 +41,7 @@
   padding: 16px;
   background-color: #d2dbea;
   text-align: left;
+  color: #545454;
 }
 
 .tabela table tbody tr td {

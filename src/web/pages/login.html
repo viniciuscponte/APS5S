@@ -5,12 +5,12 @@
 
 <main id="main_login" class="login">
 
-  <div class="row flex">
+  <div class="row">
 
     <div id="" class="col-6">
-      <img src="../../assets/logoNovoInvertido.png" style="padding: 14.6% 13.6%">
+      <img src="../../assets/logoNovoInvertido.png" class="imgLogin">
     </div>
-    <div id="div_login" class="login col-6">
+    <div id="div_login" class="login col-6" style="height: 100vh;">
       <header id="header_login">
         <h1 id="h1_header_login" class="display-3 roboto"><b>Login</b></h1>
         <h5 id="p_header_login" class="roboto">Faça login para continuar</h5>
@@ -21,7 +21,7 @@
           <input id="ip_connection" class="form-control " type="text" />
 
           <label for="port_connection" class="login roboto">PORT</label>
-          <input id="port_connection" class="form-control" type="text" />
+          <input onkeypress="enviaEnter(event, 1)" id="port_connection" class="form-control" type="text" />
           <br>
           <div align="center">
             <button id="btn_ip_con" class="btn col-6" type="button" onclick="startConnection()">CONECTAR</button>
@@ -32,7 +32,8 @@
         <label for="login_user" class="login roboto">Insira o e-mail</label>
         <input id="login_user" class="form-control" type="text" disabled=true />
         <label for="login_password" class="login roboto">Digite a senha</label>
-        <input id="login_password" class="form-control" type="password" disabled=true />
+        <input onkeypress="enviaEnter(event, 2)" id="login_password" class="form-control" type="password"
+          disabled=true />
         <br>
         <div align="center">
           <button id="btn_ip_con" class="btn col-6" type="button" onclick="authenticate()">LOGIN</button>
@@ -45,5 +46,17 @@
 <!-- Referencia o arquivo de scripts da tela de login -->
 <!-- Utilizado para fazer a conexão com o servidor e enviar o formulário de acesso -->
 <script type="text/javascript" src="../scripts/login.js"></script>
+<script>
+  function enviaEnter(e, number) {
+    var tecla = (window.event) ? event.keyCode : e.which;
+    if (tecla == 13) {
+      if (number == 1) {
+        startConnection();
+      } else if (number == 2) {
+        authenticate();
+      }
+    }
+  }
+</script>
 
 {% endblock %}

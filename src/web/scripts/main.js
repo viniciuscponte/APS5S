@@ -82,6 +82,10 @@ eel
 
 function refresh(dados){
   showMenu();
+  if (dados[4] == "Usuario"){
+    document.getElementById("usuarios-btn").style.display = "none";
+    document.getElementById("dashboard-btn").style.display = "none";
+  }
   document.getElementById("perfil__nome").textContent = dados[1];
   document.getElementById("perfil__icone").textContent = dados[1].split("")[0].toUpperCase();
   console.log(dados[0]);
@@ -109,17 +113,18 @@ function receiveMessage(msg, screen) {
 
     // CHAT
     if (screen == "chat"){
+      var splitmsg =  msg.split("  :  ");
       var div = document.createElement("div");
       div.classList.add("balloon_left");
 
       var h6 = document.createElement("h6");
       h6.style.color = "red";
       
-      var nome = document.createTextNode("NOME");
+      var nome = document.createTextNode(splitmsg[1]);
       h6.appendChild(nome);
       div.appendChild(h6);
       
-      var text = document.createTextNode(msg);
+      var text = document.createTextNode(splitmsg[0]);
       div.appendChild(text);
 
       
@@ -146,6 +151,7 @@ function receiveMessage(msg, screen) {
       msg = msg.split("  :  ");
       nome = msg[0];
       ico = msg[1];
+      nivel = msg[2];
       console.log(nome);
       console.log(ico);
       console.log(screen);
@@ -155,6 +161,10 @@ function receiveMessage(msg, screen) {
         alert("Usuário não existe!");
       } else {
         showMenu();
+        if (nivel == "Usuario"){
+          document.getElementById("usuarios-btn").style.display = "none";
+          document.getElementById("dashboard-btn").style.display = "none";
+        }
         document.getElementById("perfil__nome").textContent = nome;
         document.getElementById("perfil__icone").textContent = ico;
         changeScreen('chat');
